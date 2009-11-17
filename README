@@ -1,0 +1,2 @@
+Work in progress, first on a way to use SQLite3 from Go,
+next on a generic database API for Go.
