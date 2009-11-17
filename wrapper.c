@@ -1,5 +1,5 @@
 #include <sqlite3.h>
-#include "sqlite3wrapper.h"
+#include "wrapper.h"
 
 int wsq_open(const char *name, wsq_db *database, int flags, const char *vfs)
 {
