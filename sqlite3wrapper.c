@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <sqlite3.h>
 #include "sqlite3wrapper.h"
 
@@ -45,4 +44,14 @@ int wsq_finalize(wsq_st statement)
 int wsq_close(wsq_db database)
 {
 	return sqlite3_close(database);
+}
+
+int wsq_errcode(wsq_db database)
+{
+	return sqlite3_errcode(database);
+}
+
+const char *wsq_errmsg(wsq_db database)
+{
+	return sqlite3_errmsg(database);
 }
