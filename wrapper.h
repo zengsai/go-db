@@ -45,6 +45,9 @@ int wsq_close(wsq_db database);
 /* really sqlite3_errcode */
 int wsq_errcode(wsq_db database);
 
+/* really sqlite3_extended_errcode */
+int wsq_extended_errcode(wsq_db database);
+
 /* really  sqlite3_errmsg */
 const char *wsq_errmsg(wsq_db database);
 

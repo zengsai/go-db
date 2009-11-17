@@ -6,12 +6,11 @@ package sqlite3
 
 type Error struct {
 	code int;
-	extended int; // TODO: unused so far
+	extended int;
 	message string;
 }
 
 func (self *Error) String() string {
-	// TODO: better message that includes code(s)?
 	return self.message;
 }
 
@@ -20,6 +19,5 @@ func (self *Error) Code() int {
 }
 
 func (self *Error) Extended() int {
-	// TODO: always 0 for now
 	return self.extended;
 }

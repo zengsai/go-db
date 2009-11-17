@@ -51,6 +51,11 @@ int wsq_errcode(wsq_db database)
 	return sqlite3_errcode(database);
 }
 
+int wsq_extended_errcode(wsq_db database)
+{
+	return sqlite3_extended_errcode(database);
+}
+
 const char *wsq_errmsg(wsq_db database)
 {
 	return sqlite3_errmsg(database);
