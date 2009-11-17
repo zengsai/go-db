@@ -1,2 +1,6 @@
-Work in progress, first on a way to use SQLite3 from Go,
-next on a generic database API for Go.
+Work in progress. Two goals:
+
+  1. Access SQLite3 databases from Go.
+  2. Design generic database API for Go.
+
+Neither is done, obviously. :-D
