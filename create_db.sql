@@ -9,7 +9,7 @@ CREATE TABLE Users (
 );
 
 INSERT INTO Users (login, password, name, email)
-  VALUES ("phf", "somepassword", "Peter Froehlich", "phf@cs.jhu.edu");
+  VALUES ("phf", "somepassword", "Peter Froehlich", "phf@phf.phf");
 
 INSERT INTO Users (login, password, name, email)
   VALUES ("adt", "somepassword", "Abstract Data Type", "adt@adt.adt");
