@@ -1,6 +1,8 @@
 Work in progress. Two goals:
 
-  1. Access SQLite3 databases from Go.
-  2. Design generic database API for Go.
+  1. Enable access to SQLite databases from Go.
+  2. Design a generic database API for Go that
+     supports multiple RDBMSs.
 
-Neither is done, obviously. :-D
+So far only the first has been (partially!)
+accomplished. Stay tuned.
