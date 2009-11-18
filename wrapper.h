@@ -33,8 +33,8 @@ int wsq_column_type(wsq_st statement, int column);
 /* really sqlite3_column_name */
 const char *wsq_column_name(wsq_st statement, int column);
 
-/* really sqlite3_column_text */
-const unsigned char *wsq_column_text(wsq_st statement, int column);
+/* really sqlite3_column_text, really returns unsigned char */
+const char *wsq_column_text(wsq_st statement, int column);
 
 /* really sqlite3_finalize */
 int wsq_finalize(wsq_st statement);

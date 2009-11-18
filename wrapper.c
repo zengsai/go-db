@@ -31,7 +31,7 @@ const char *wsq_column_name(wsq_st statement, int column)
 	return sqlite3_column_name(statement, column);
 }
 
-const unsigned char *wsq_column_text(wsq_st statement, int column)
+const char *wsq_column_text(wsq_st statement, int column)
 {
 	return sqlite3_column_text(statement, column);
 }
