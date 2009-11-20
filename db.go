@@ -13,7 +13,7 @@
 	at the level of this API.
 */
 
-package future_database_api_for_go
+package db
 
 import "os"
 
