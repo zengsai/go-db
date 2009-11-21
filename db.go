@@ -181,6 +181,7 @@ type TransactionalConnection interface {
 	TODO: include parameter binding API? or subsume in Execute()?
 */
 type Statement interface {
+	Close() os.Error;
 }
 
 /*
