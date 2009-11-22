@@ -192,6 +192,7 @@ type Statement interface {
 */
 
 type Cursor interface {
+	MoreResults() bool;
 	FetchOne() ([]interface {}, os.Error);
 	FetchMany(count int) ([][]interface {}, os.Error);
 	FetchAll() ([][]interface {}, os.Error);
