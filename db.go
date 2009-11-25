@@ -118,8 +118,10 @@ type Connection interface {
 	/*
 		Close() ends the connection to the database system
 		and frees up all internal resources associated with
-		it. After a connection has been closed, no further
-		operations are allowed on it.
+		it. Note that you must close all Statement and Cursor
+		objects created through a connection before closing
+		the connection itself. After a connection has been
+		closed, no further operations are allowed on it.
 	*/
 	Close() os.Error
 }
@@ -179,51 +181,79 @@ type TransactionalConnection interface {
 	Statements are precompiled queries, possibly with remaining
 	parameter slots that need to be filled before execution.
 	TODO: include parameter binding API? or subsume in Execute()?
+	what about resetting the statement or clearing parameter
+	bindings?
 */
 type Statement interface {
 	Close() os.Error;
 }
 
 /*
-	TODO
-	Queries that produced results return a Cursor to allow clients
-	to iterate through the results (there are several variations of
-	this, but Cursor is the most basic one):
-*/
+	A call to Execute() that generates results from the database
+	system returns a Cursor to allow clients to iterate through
+	the results. Specific database interfaces will return
+	cursor objects conforming to one or more of the following
+	interfaces which represent different levels of functionality.
 
+	TODO: API based on iterable instead?
+*/
 type Cursor interface {
+	/*
+		Are there more results to be fetched?
+	*/
 	MoreResults() bool;
+	/*
+		Fetch the next result from the database. A result
+		is returned as a array of generic objects, one for
+		each field. The database interface in question has
+		to define what concrete types are returned depending
+		on the types used in the database system.
+	*/
 	FetchOne() ([]interface {}, os.Error);
+	/*
+		Fetch at most count results. MAY GO AWAY SOON.
+	*/
 	FetchMany(count int) ([][]interface {}, os.Error);
+	/*
+		Fetch all (remaining) results. MAY GO AWAY SOON.
+	*/
 	FetchAll() ([][]interface {}, os.Error);
+	/*
+		Close() frees the cursor. After a cursor has been
+		closed, no further operations are allowed on it.
+	*/
 	Close() os.Error
 }
 
 type InformativeCursor interface {
 	Cursor;
+	/*
+		Description() returns a map from (the name of) a field to
+		(the name of) its type. The exact format of field and type
+		names is specified by the database interface in question.
+	*/
 	Description() (map[string]string, os.Error);
+	/*
+		Results returns the number of results remaining to be
+		Fetch()ed.
+	*/
 	Results() int;
 };
 
 type PythonicCursor interface {
 	Cursor;
+	/*
+		FetchDict() is similar to FetchOne() but instead of
+		returning a slice it returns a map from fields names
+		to values instead.
+	*/
         FetchDict() (data map[string]interface{}, error os.Error);
+	/*
+		Fetch at most count results. MAY GO AWAY SOON.
+	*/
         FetchManyDicts(count int) (data []map[string]interface{}, error os.Error);
+	/*
+		Fetch all remaining results. MAY GO AWAY SOON.
+	*/
         FetchAllDicts() (data []map[string]interface{}, error os.Error)
 };
-
-/*
-	TODO
-	Each result consists of a number of fields (in relational
-	terminology, a result is a row and the fields are entries
-	in each column).
-
-	Description() returns a map from (the name of) a field to
-	(the name of) its type. The exact format of field and type
-	names is specified by the database interface in question.
-
-	The Fetch() methods are used to returns results. You can mix
-	and match, but if you want to know how many results you got
-	in total you need to keep a running tally yourself.
-	TODO
-*/
