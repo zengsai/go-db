@@ -157,8 +157,11 @@ type FancyConnection interface {
 	Connection;
 	/*
 		ExecuteDirectly() is a wrapper around Prepare() and Execute().
+		XXX: can't be implemented with this signature for SQLite (at
+		least not without jumping through serious hoops); WILL GO AWAY
+		SOON, FOR SURE!
 	*/
-	ExecuteDirectly(query string, parameters ...) (*Cursor, os.Error);
+	ExecuteDirectly(query string, parameters ...) (Cursor, os.Error);
 }
 
 /*
@@ -264,4 +267,25 @@ type PythonicCursor interface {
 		Fetch all remaining results. MAY GO AWAY SOON.
 	*/
 	FetchAllDicts() (data []map[string]interface{}, error os.Error);
+}
+
+/*
+	ExecuteDirectly is a convenience function for "one-off" queries.
+	If you need more control, for example to rebind parameters over
+	and over again, or to get results one by one, you should use the
+	Prepare() and Execute() methods explicitly instead.
+*/
+func ExecuteDirectly(connection Connection, query string, parameters ...) (results [][]interface{}, error os.Error) {
+	var s Statement;
+	s, error = connection.Prepare(query);
+	if error != nil { return }
+	defer s.Close();
+
+	var c Cursor;
+	c, error = connection.Execute(s, parameters);
+	if error != nil { return }
+	defer c.Close();
+
+	results, error = c.FetchAll();
+	return;
 }
