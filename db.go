@@ -4,13 +4,21 @@
 	Terminology:
 
 	Database systems are pieces of software (usually outside of Go)
-	that allow storage and retrieval of data. Note that we try not
-	to imply "relational" at the level of this API.
+	that allow storage and retrieval of data. We try not to imply
+	"relational" at the level of this API.
 
-	Database interfaces are pieces of software (usually written in
+	Database bindings are pieces of software (usually written in
 	Go) that allow Go programs to interact with database systems
-	through some query language. Note that we try not to imply "SQL"
-	at the level of this API.
+	through some query language. We try not to imply "SQL" at the
+	level of this API.
+
+	Goals:
+
+	The API described here is a set of conventions that should be
+	followed by database bindings. Obviously there are levels of
+	compliance, but every database binding should at least implement
+	the core of the API: the functions Version() and Open() as well
+	as the interfaces Connection, Statement, and Cursor.
 */
 
 package db
@@ -18,32 +26,32 @@ package db
 import "os"
 
 /*
-	Each database interface must provide a Version() function to
+	Each database binding must provide a Version() function to
 	allow careful clients to configure themselves appropriately
 	for the database system in question. There are a number of
 	well-known keys in the map returned by Version():
 
 	Key		Description
 
-	version		generic version
+	version		generic version (if client/server doesn't apply)
 	client		client version
 	server		server version
 	protocol	protocol version
-	interface	database interface version
+	binding		database binding version
 
-	The specific database interface can decide which of these
-	keys to return. For example, sqlite3 returns "version" and
-	"interface"; mysql should probably return all keys except
-	"version" instead.
+	Database bindings decide which of these keys to return. For
+	example, sqlite3 returns "version" and "binding"; mysql
+	should probably return all keys except "version" instead.
 
-	Database interfaces can also return additional keys, provided
-	they prefix them appropriately. The sqlite3 interface, for
-	example, returns "sqlite3.sourceid" as well.
+	Database bindings can also return additional keys, provided
+	they prefix them with the package name of the binding in
+	question. The sqlite3 binding, for example, returns
+	"sqlite3.sourceid" as well.
 */
 type VersionSignature func () (map[string]string, os.Error)
 
 /*
-	Each database interface must provide an Open() function to
+	Each database binding must provide an Open() function to
 	establish connections to a database system. Database systems
 	require a wide variety of parameters for connections, which
 	is why the parameters to Open() are passed as a map.
@@ -74,28 +82,28 @@ type VersionSignature func () (map[string]string, os.Error)
 	)
 
 	Note that defaults for all keys are specific to the database
-	interface in question and should be documented there.
+	binding in question and should be documented there.
 
 	The Open() function is free to ignore entries that it has no
-	use for. For example, the sqlite3 interface only understands
+	use for. For example, the sqlite3 binding only understands
 	"name" and ignores the other well-known keys.
 
-	A database interface is free to introduce additional keys if
+	A database binding is free to introduce additional keys if
 	necessary, however those keys have to start with the package
-	name of the database interface in question. For example, the
-	sqlite3 interface supports the key "sqlite3.vfs".
+	name of the database binding in question. For example, the
+	sqlite3 binding supports the key "sqlite3.vfs".
 */
 type OpenSignature func (args map[string]interface{}) (connection Connection, error os.Error)
 
 /*
 	A successful call to Open() results in a connection to the
-	database system. Specific database interfaces will return
+	database system. Specific database binding will return
 	connection objects conforming to one or more of the following
 	interfaces which represent different levels of functionality.
 
 	Note that the choice to separate Prepare() and Execute() for
 	the most basic connection interface is deliberate: It leaves
-	the database interface the most flexibilty in achieving good
+	the database binding the most flexibilty in achieving good
 	performance without requiring it to implement additional
 	caching schemes.
 */
@@ -105,7 +113,7 @@ type Connection interface {
 		a precompiled statement that can be executed after any
 		remaining parameters have been bound. The format of
 		parameters in the query string is dependent on the
-		database interface in question.
+		database binding in question.
 	*/
 	Prepare(query string) (Statement, os.Error);
 	/*
@@ -134,7 +142,7 @@ type InformativeConnection interface {
 	Connection;
 	/*
 		If a query modified the database, Changes() returns the number
-		of changes that took place. Note that the database interface
+		of changes that took place. Note that the database binding
 		has to explain what exactly constitutes a change for a given
 		database system and query.
 	*/
@@ -155,7 +163,7 @@ type FancyConnection interface {
 
 /*
 	TransactionalConnections support transactions. Note that
-	the database interface in question may be in "auto commit"
+	the database binding in question may be in "auto commit"
 	mode by default. Once you call Begin(), "auto commit" will
 	be disabled for that connection.
 */
@@ -191,7 +199,7 @@ type Statement interface {
 /*
 	A call to Execute() that generates results from the database
 	system returns a Cursor to allow clients to iterate through
-	the results. Specific database interfaces will return
+	the results. Specific database binding will return
 	cursor objects conforming to one or more of the following
 	interfaces which represent different levels of functionality.
 
@@ -205,7 +213,7 @@ type Cursor interface {
 	/*
 		Fetch the next result from the database. A result
 		is returned as a array of generic objects, one for
-		each field. The database interface in question has
+		each field. The database binding in question has
 		to define what concrete types are returned depending
 		on the types used in the database system.
 	*/
@@ -230,7 +238,7 @@ type InformativeCursor interface {
 	/*
 		Description() returns a map from (the name of) a field to
 		(the name of) its type. The exact format of field and type
-		names is specified by the database interface in question.
+		names is specified by the database binding in question.
 	*/
 	Description() (map[string]string, os.Error);
 	/*
