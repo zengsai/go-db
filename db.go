@@ -48,7 +48,7 @@ import "os"
 	question. The sqlite3 binding, for example, returns
 	"sqlite3.sourceid" as well.
 */
-type VersionSignature func () (map[string]string, os.Error)
+type VersionSignature func() (map[string]string, os.Error)
 
 /*
 	Each database binding must provide an Open() function to
@@ -93,7 +93,7 @@ type VersionSignature func () (map[string]string, os.Error)
 	name of the database binding in question. For example, the
 	sqlite3 binding supports the key "sqlite3.vfs".
 */
-type OpenSignature func (args map[string]interface{}) (connection Connection, error os.Error)
+type OpenSignature func(args map[string]interface{}) (connection Connection, error os.Error)
 
 /*
 	A successful call to Open() results in a connection to the
@@ -131,7 +131,7 @@ type Connection interface {
 		the connection itself. After a connection has been
 		closed, no further operations are allowed on it.
 	*/
-	Close() os.Error
+	Close() os.Error;
 }
 
 /*
@@ -158,7 +158,7 @@ type FancyConnection interface {
 	/*
 		ExecuteDirectly() is a wrapper around Prepare() and Execute().
 	*/
-	ExecuteDirectly(query string, parameters ...) (*Cursor, os.Error)
+	ExecuteDirectly(query string, parameters ...) (*Cursor, os.Error);
 }
 
 /*
@@ -182,7 +182,7 @@ type TransactionalConnection interface {
 		Rollback() tries to undo all changes made as
 		part of the current transaction.
 	*/
-	Rollback() os.Error
+	Rollback() os.Error;
 }
 
 /*
@@ -217,20 +217,20 @@ type Cursor interface {
 		to define what concrete types are returned depending
 		on the types used in the database system.
 	*/
-	FetchOne() ([]interface {}, os.Error);
+	FetchOne() ([]interface{}, os.Error);
 	/*
 		Fetch at most count results. MAY GO AWAY SOON.
 	*/
-	FetchMany(count int) ([][]interface {}, os.Error);
+	FetchMany(count int) ([][]interface{}, os.Error);
 	/*
 		Fetch all (remaining) results. MAY GO AWAY SOON.
 	*/
-	FetchAll() ([][]interface {}, os.Error);
+	FetchAll() ([][]interface{}, os.Error);
 	/*
 		Close() frees the cursor. After a cursor has been
 		closed, no further operations are allowed on it.
 	*/
-	Close() os.Error
+	Close() os.Error;
 }
 
 type InformativeCursor interface {
@@ -246,7 +246,7 @@ type InformativeCursor interface {
 		Fetch()ed.
 	*/
 	Results() int;
-};
+}
 
 type PythonicCursor interface {
 	Cursor;
@@ -255,13 +255,13 @@ type PythonicCursor interface {
 		returning a slice it returns a map from fields names
 		to values instead.
 	*/
-        FetchDict() (data map[string]interface{}, error os.Error);
+	FetchDict() (data map[string]interface{}, error os.Error);
 	/*
 		Fetch at most count results. MAY GO AWAY SOON.
 	*/
-        FetchManyDicts(count int) (data []map[string]interface{}, error os.Error);
+	FetchManyDicts(count int) (data []map[string]interface{}, error os.Error);
 	/*
 		Fetch all remaining results. MAY GO AWAY SOON.
 	*/
-        FetchAllDicts() (data []map[string]interface{}, error os.Error)
-};
+	FetchAllDicts() (data []map[string]interface{}, error os.Error);
+}
