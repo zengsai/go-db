@@ -278,12 +278,12 @@ type PythonicCursor interface {
 func ExecuteDirectly(connection Connection, query string, parameters ...) (results [][]interface{}, error os.Error) {
 	var s Statement;
 	s, error = connection.Prepare(query);
-	if error != nil { return }
 	defer s.Close();
+	if error != nil { return }
 
 	var c Cursor;
 	c, error = connection.Execute(s, parameters);
-	if error != nil { return }
+	if error != nil || c == nil { return }
 	defer c.Close();
 
 	results, error = c.FetchAll();
