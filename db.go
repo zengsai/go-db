@@ -118,6 +118,10 @@ type OpenSignature func(args map[string]interface{}) (conn Connection, err os.Er
 // or more of the following interfaces which represent
 // different levels of functionality.
 //
+// Iterate() is an experimental variant of Execute()
+// that returns a channel of Result objects instead
+// of a Cursor. XXX: Is this any good?
+//
 // Close() ends the connection to the database system
 // and frees up all internal resources associated with
 // it. Note that you must close all Statement and Cursor
@@ -127,7 +131,14 @@ type OpenSignature func(args map[string]interface{}) (conn Connection, err os.Er
 type Connection interface {
 	Prepare(query string) (Statement, os.Error);
 	Execute(statement Statement, parameters ...) (Cursor, os.Error);
+	Iterate(statement Statement, parameters ...) (<-chan Result, os.Error);
 	Close() os.Error;
+}
+
+// The iterator approach to execute returns these things
+type Result struct {
+	Data []interface{};
+	Error os.Error;
 }
 
 // InformativeConnections supply useful but optional information.
