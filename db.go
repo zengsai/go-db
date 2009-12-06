@@ -137,8 +137,8 @@ type Connection interface {
 
 // The iterator approach to execute returns these things
 type Result struct {
-	Data []interface{};
-	Error os.Error;
+	Data	[]interface{};
+	Error	os.Error;
 }
 
 // InformativeConnections supply useful but optional information.
@@ -245,11 +245,15 @@ func ExecuteDirectly(conn Connection, query string, params ...) (results [][]int
 	var s Statement;
 	s, err = conn.Prepare(query);
 	defer s.Close();
-	if err != nil { return }
+	if err != nil {
+		return
+	}
 
 	var c Cursor;
 	c, err = conn.Execute(s, params);
-	if err != nil || c == nil { return }
+	if err != nil || c == nil {
+		return
+	}
 	defer c.Close();
 
 	results, err = c.FetchAll();
