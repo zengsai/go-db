@@ -244,10 +244,10 @@ type PythonicCursor interface {
 func ExecuteDirectly(conn Connection, query string, params ...) (results [][]interface{}, err os.Error) {
 	var s Statement;
 	s, err = conn.Prepare(query);
-	defer s.Close();
-	if err != nil {
+	if err != nil || s == nil {
 		return
 	}
+	defer s.Close();
 
 	var c Cursor;
 	c, err = conn.Execute(s, params);
