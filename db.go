@@ -21,15 +21,15 @@
 // followed by database drivers. Obviously there are levels of
 // compliance, but every database driver should at least implement
 // the core of the API: the functions Version() and Open() as well
-// as the interfaces Connection, Statement, and Cursor.
+// as the interfaces TODO Connection, Statement, and Cursor.
 package db
 
 import "os"
 
-// Each database driver must provide a Version() function to
-// allow careful clients to configure themselves appropriately
-// for the database system in question. There are a number of
-// well-known keys in the map returned by Version():
+// Database drivers must provide the Version() function to allow
+// careful clients to configure themselves appropriately for the
+// database system in question. There are a number of well-known
+// keys in the map returned by Version():
 //
 //	Key		Description
 //
@@ -39,14 +39,15 @@ import "os"
 //	protocol	protocol version
 //	driver		database driver version
 //
-// Database driver decide which of these keys to return. For
-// example, db/sqlite3 returns "version" and "driver"; db/mysql
-// should probably return all keys except "version" instead.
+// Database drivers decide which of these keys to return. For
+// example, the sqlite3 driver returns "version" and "driver";
+// the mysql driver should probably return all keys except
+// "version" instead.
 //
-// Database driver can also return additional keys, provided
-// they prefix them with the package name of the driver in
-// question. The db/sqlite3 driver, for example, returns
-// "sqlite3.sourceid" as well.
+// Database drivers can also return additional keys provided
+// they prefix them with the package name of the driver. The
+// sqlite3 driver, for example, returns "sqlite3.sourceid" in
+// addition to "version" and "driver".
 type VersionSignature func() (map[string]string, os.Error)
 
 // Each database driver must provide an Open() function to
@@ -190,7 +191,8 @@ type InformativeConnection interface {
 // TransactionalConnections support transactions. Note that
 // the database driver in question may be in "auto commit"
 // mode by default. Once you call Begin(), "auto commit" will
-// be disabled for that connection.
+// be disabled for that connection until you either Commit()
+// or Rollback() successfully.
 //
 // Begin() starts a transaction.
 //
