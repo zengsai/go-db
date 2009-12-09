@@ -50,54 +50,39 @@ import "os"
 // addition to "version" and "driver".
 type VersionSignature func() (map[string]string, os.Error)
 
-// Each database driver must provide an Open() function to
-// establish connections to a database system. Database systems
-// require a wide variety of parameters for connections, which
-// is why the parameters to Open() are passed as a map.
+// Database drivers must provide the Open() function to allow
+// clients to establish connections to a database system. The
+// parameter to Open() is a URL of the following form:
 //
-// XXX: THE MAP WILL BE REPLACED WITH SOME FORM OF URL IN THE
-// NEAR FUTURE. http://golang.org/pkg/http/#URL
+//	driver://username:password@host:port/database?key=value;key=value
 //
-// Each map entry consists of a string key and a generic value.
-// There are a number of well-known keys that apply to many (if
-// not all) database systems:
+// Most parts of this URL are optional. The sqlite3 database
+// driver for example interprets "sqlite3://test.db" as the
+// database "test.db" in the current directory. Actually, it
+// also interprets "test.db" by itself that way. If a driver
+// is specified in the URL, it has to match the driver whose
+// Open() function is called. For example the sqlite3 driver
+// will fail if asked to open "mysql://somedb". There can be
+// as many key/value pairs as necessary to configure special
+// features of the particular database driver. Here are more
+// examples:
 //
-//	Name		Type	Description
+//	c, e := mysql.Open("mysql://phf:wow@example.com:7311/mydb");
+//	c, e := sqlite3.Open("test.db?flags=0x00020001");
 //
-//	name		string	the database to connect to
-//	host		string	the host to connect to
-//	port		int	the port to connect to
-//	username	string	the user to connect as
-//	password	string	the password for that user
+// Note that defaults for all optional components are specific
+// to the database driver in question and should be documented
+// there.
 //
-// For example, the following piece of code tries to connect to
-// a MySQL database on the local machine at the default port:
-//
-//	c, e := mysql.Open(
-//		Arguments{
-//			"name": "mydb",
-//			"username": "phf",
-//			"password": "somepassword"
-//		}
-//	)
-//
-// Note that defaults for all keys are specific to the database
-// driver in question and should be documented there.
-//
-// The Open() function is free to ignore entries that it has no
-// use for. For example, the sqlite3 driver only understands
-// "name" and ignores the other well-known keys.
-//
-// A database driver is free to introduce additional keys if
-// necessary, however those keys have to start with the package
-// name of the database driver in question. For example, the
-// sqlite3 driver supports the key "sqlite3.vfs".
+// The Open() function is free to ignore components that it
+// has no use for. For example, the sqlite3 driver ignores
+// username, password, host, and port.
 //
 // A successful call to Open() results in a connection to the
 // database system. Specific database drivers will return
 // connection objects conforming to one or more of the following
 // interfaces which represent different levels of functionality.
-type OpenSignature func(args map[string]interface{}) (conn Connection, err os.Error)
+type OpenSignature func(url string) (conn Connection, err os.Error)
 
 // The most basic type of database connection.
 //
