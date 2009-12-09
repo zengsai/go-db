@@ -99,15 +99,12 @@ type OpenSignature func(url string) (conn Connection, err os.Error)
 //
 // Execute() accepts a precompiled statement, binds the
 // given parameters, and then executes the statement.
-// If the statement produces results, Execute() returns
-// a cursor; otherwise it returns nil. Specific database
-// driver will return cursor objects conforming to one
-// or more of the following interfaces which represent
-// different levels of functionality.
-//
-// Iterate() is an experimental variant of Execute()
-// that returns a channel of Result objects instead
-// of a Cursor. XXX: Is this any good?
+// Execute() returns a channel of Result objects which
+// can be examined one at a time (if the query produced
+// results to begin with). Specific database drivers
+// will return result objects conforming to one or more
+// of the following interfaces which represent different
+// levels of functionality.
 //
 // Close() ends the connection to the database system
 // and frees up all internal resources associated with
@@ -117,9 +114,14 @@ type OpenSignature func(url string) (conn Connection, err os.Error)
 // closed, no further operations are allowed on it.
 type Connection interface {
 	Prepare(query string) (Statement, os.Error);
-	Execute(statement Statement, parameters ...) (Cursor, os.Error);
-	Iterate(statement Statement, parameters ...) (<-chan Result, os.Error);
+	Execute(statement Statement, parameters ...) (<-chan Result, os.Error);
 	Close() os.Error;
+}
+
+// XXX: an experimental "classic" API
+type ClassicConnection interface {
+	Connection;
+	ExecuteClassic(statement Statement, parameters ...) (Cursor, os.Error);
 }
 
 // InformativeConnections supply useful but optional information.
@@ -273,7 +275,8 @@ func ExecuteDirectly(conn Connection, query string, params ...) (results [][]int
 	defer s.Close();
 
 	var c Cursor;
-	c, err = conn.Execute(s, params);
+	con := conn.(ClassicConnection);
+	c, err = con.ExecuteClassic(s, params);
 	if err != nil || c == nil {
 		return
 	}
