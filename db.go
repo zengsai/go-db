@@ -122,7 +122,7 @@ type Connection interface {
 }
 
 // The most basic type of result.
-// 
+//
 // Data() returns the data for this result as an array
 // of generic objects. The database driver in question
 // defines what concrete types are returned depending
