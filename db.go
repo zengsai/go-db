@@ -25,6 +25,7 @@
 package db
 
 import "os"
+import "strings"
 
 // Database drivers must provide the Version() function to allow
 // careful clients to configure themselves appropriately for the
@@ -283,5 +284,35 @@ func ExecuteDirectly(conn Connection, query string, params ...) (results [][]int
 	defer c.Close();
 
 	results, err = c.FetchAll();
+	return;
+}
+
+// ParseQueryURL() helps database drivers parse URLs passed to
+// Open(). It takes a string of the form
+//
+//	key=value{;key=value;...;key=value}]
+//
+// and returns a map from keys to values. Empty strings yield
+// an empty map; malformed strings yield a nil map instead.
+func ParseQueryURL(str string) (opt map[string]string) {
+	opt = make(map[string]string);
+	if len(str) == 0 {
+		return opt
+	}
+
+	pairs := strings.Split(str, ";", 0);
+	if len(pairs) == 0 {
+		return nil
+	}
+
+	for _, p := range pairs {
+		pieces := strings.Split(p, "=", 0);
+		if len(pieces) == 2 {
+			opt[pieces[0]] = pieces[1]
+		} else {
+			return nil
+		}
+	}
+
 	return;
 }
