@@ -21,7 +21,7 @@
 // followed by database drivers. Obviously there are levels of
 // compliance, but every database driver should at least implement
 // the core of the API: the functions Version() and Open() as well
-// as the interfaces TODO Connection, Statement, and Cursor.
+// as the interfaces Connection, Statement, and Result.
 package db
 
 import "os"
@@ -243,21 +243,6 @@ type InformativeCursor interface {
 	Cursor;
 	Description() (map[string]string, os.Error);
 	Results() int;
-}
-
-// PythonicCursors fetch results as maps from field names to
-// values instead of just slices of values.
-//
-// TODO: find a better name for this!
-//
-// FetchDict() is similar to FetchOne().
-// FetchDictMany() is similar to FetchMany().
-// FetchDictAll() is similar to FetchAll().
-type PythonicCursor interface {
-	Cursor;
-	FetchDict() (data map[string]interface{}, error os.Error);
-	FetchManyDicts(count int) (data []map[string]interface{}, error os.Error);
-	FetchAllDicts() (data []map[string]interface{}, error os.Error);
 }
 
 // ExecuteDirectly is a convenience function for "one-off" queries.
