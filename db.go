@@ -289,29 +289,38 @@ func ExecuteDirectly(conn Connection, query string, params ...) (results [][]int
 //	key=value{;key=value;...;key=value}]
 //
 // and returns a map from keys to values. Empty strings yield
-// an empty map; malformed strings yield a nil map instead; a
-// string is malformed, for example, if it contains duplicate
-// keys.
-func ParseQueryURL(str string) (opt map[string]string) {
+// an empty map. Format violations or duplicate keys lead to
+// an error and an incomplete map.
+func ParseQueryURL(str string) (opt map[string]string, err os.Error) {
 	opt = make(map[string]string);
-	if len(str) == 0 {
-		return opt
+	if len(str) > 0 {
+		err = parseQueryHelper(str, opt);
 	}
+	return;
+}
 
+func parseQueryHelper(str string, opt map[string]string) (err os.Error) {
 	pairs := strings.Split(str, ";", 0);
 	if len(pairs) == 0 {
-		return nil
+		err = os.NewError("ParseQueryURL: No pairs in "+str);
+		return; // nothing left to do
 	}
 
 	for _, p := range pairs {
 		pieces := strings.Split(p, "=", 0);
+		// we keep going even if there was an error to fill the
+		// map as much as possible; this means we'll return only
+		// the last error, a tradeoff
 		if len(pieces) == 2 {
 			if _, duplicate := opt[pieces[0]]; duplicate {
-				return nil;
+				err = os.NewError("ParseQueryURL: Duplicate key "+pieces[0]);
 			}
-			opt[pieces[0]] = pieces[1]
-		} else {
-			return nil
+			else {
+				opt[pieces[0]] = pieces[1]
+			}
+		}
+		else {
+			err = os.NewError("ParseQueryURL: One '=' expected, got "+p);
 		}
 	}
 
