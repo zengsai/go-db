@@ -289,7 +289,9 @@ func ExecuteDirectly(conn Connection, query string, params ...) (results [][]int
 //	key=value{;key=value;...;key=value}]
 //
 // and returns a map from keys to values. Empty strings yield
-// an empty map; malformed strings yield a nil map instead.
+// an empty map; malformed strings yield a nil map instead; a
+// string is malformed, for example, if it contains duplicate
+// keys.
 func ParseQueryURL(str string) (opt map[string]string) {
 	opt = make(map[string]string);
 	if len(str) == 0 {
@@ -304,6 +306,9 @@ func ParseQueryURL(str string) (opt map[string]string) {
 	for _, p := range pairs {
 		pieces := strings.Split(p, "=", 0);
 		if len(pieces) == 2 {
+			if _, duplicate := opt[pieces[0]]; duplicate {
+				return nil;
+			}
 			opt[pieces[0]] = pieces[1]
 		} else {
 			return nil
