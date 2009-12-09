@@ -169,9 +169,14 @@ type FancyResult interface {
 // to the database. Note that the database driver has to explain
 // what exactly constitutes a "change" for a given database system
 // and query.
+//
+// LastId() returns the id of the last successful insertion into
+// the database. The database driver has to explain the exact
+// meaning of the id and the conditions under which it changes.
 type InformativeConnection interface {
 	Connection;
 	Changes() (int, os.Error);
+	LastId() (int, os.Error);
 }
 
 // TransactionalConnections support transactions. Note that
