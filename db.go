@@ -256,6 +256,7 @@ type InformativeCursor interface {
 type ResultSet interface {
 	More() bool;
 	Fetch() Result;
+	Close() os.Error;
 }
 
 // ExecuteDirectly is a convenience function for "one-off" queries.
