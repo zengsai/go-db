@@ -83,7 +83,7 @@ type VersionSignature func() (map[string]string, os.Error)
 // database system. Specific database drivers will return
 // connection objects conforming to one or more of the following
 // interfaces which represent different levels of functionality.
-type OpenSignature func(url string) (conn Connection, err os.Error)
+type OpenSignature func(url string) (Connection, os.Error)
 
 // The most basic type of database connection.
 //
@@ -114,14 +114,14 @@ type OpenSignature func(url string) (conn Connection, err os.Error)
 // closed, no further operations are allowed on it.
 type Connection interface {
 	Prepare(query string) (Statement, os.Error);
-	Execute(statement Statement, parameters ...) (<-chan Result, os.Error);
+	Execute(stat Statement, parameters ...) (<-chan Result, os.Error);
 	Close() os.Error;
 }
 
 // XXX: an experimental "classic" API
 type ClassicConnection interface {
 	Connection;
-	ExecuteClassic(statement Statement, parameters ...) (Cursor, os.Error);
+	ExecuteClassic(stat Statement, parameters ...) (Cursor, os.Error);
 }
 
 // InformativeConnections supply useful but optional information.
@@ -266,6 +266,8 @@ type ResultSet interface {
 // and over again, to get results one by one, or to access metadata
 // about the results, you should use the Prepare() and Execute()
 // methods explicitly instead.
+//
+// TODO: results should be returned some other way...
 func ExecuteDirectly(conn Connection, query string, params ...) (results [][]interface{}, err os.Error) {
 	var s Statement;
 	s, err = conn.Prepare(query);
