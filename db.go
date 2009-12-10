@@ -108,10 +108,10 @@ type OpenSignature func(url string) (Connection, os.Error)
 //
 // Close() ends the connection to the database system
 // and frees up all internal resources associated with
-// it. Note that you must close all Statement and Cursor
-// objects created through a connection before closing
-// the connection itself. After a connection has been
-// closed, no further operations are allowed on it.
+// it. Note that you must close all objects created on
+// the connection before closing the connection itself.
+// After a connection has been closed, no further
+// operations are allowed on it.
 type Connection interface {
 	Prepare(query string) (Statement, os.Error);
 	Execute(stat Statement, parameters ...) (<-chan Result, os.Error);
@@ -288,14 +288,14 @@ func ExecuteDirectly(conn Connection, query string, params ...) (results [][]int
 	return;
 }
 
-// ParseQueryURL() helps database drivers parse URLs passed to
-// Open(). It takes a string of the form
+// ParseQueryURL() helps database drivers parse URLs passed
+// to Open(). ParseQueryURL() takes a string of the form
 //
-//	key=value{;key=value;...;key=value}]
+//	key=value;key=value;...;key=value
 //
-// and returns a map from keys to values. Empty strings yield
-// an empty map. Format violations or duplicate keys lead to
-// an error and an incomplete map.
+// and returns a map from keys to values. The empty string
+// yields an empty map. Format violations or duplicate keys
+// yield an error and an incomplete map.
 func ParseQueryURL(str string) (opt map[string]string, err os.Error) {
 	opt = make(map[string]string);
 	if len(str) > 0 {
