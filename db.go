@@ -22,10 +22,30 @@
 // compliance, but every database driver should at least implement
 // the core of the API: the functions Version() and Open() as well
 // as the interfaces Connection, Statement, and Result.
+//
+// Errors:
+//
+// The API uses os.Error to indicate errors as is customary in Go.
+// However, it can be useful for clients to be able to distinguish
+// errors reported by the database driver from errors reported by
+// the database system. We therefore encourage drivers to implement
+// at least two error types, DriverError and SystemError. Clients
+// can then check the runtime type of an error if they wish to.
 package db
 
 import "os"
 import "strings"
+
+// TODO: should we do this?
+// type DriverError interface {
+// 	os.Error;
+// 	Driver() string;
+// }
+//
+// type SystemError interface {
+// 	os.Error;
+// 	System() string;
+// }
 
 // Database drivers must provide the Version() function to allow
 // careful clients to configure themselves appropriately for the
