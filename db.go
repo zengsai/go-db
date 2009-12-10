@@ -250,6 +250,8 @@ type InformativeCursor interface {
 type ResultSet interface {
 	More() bool;
 	Fetch() Result;
+	// TODO: replace More/Fetch with Iter() <-chan Result;?
+	// could turn More/Fetch into ClassicResultSet :-D
 	Close() os.Error;
 }
 
