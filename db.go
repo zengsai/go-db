@@ -230,26 +230,7 @@ type FancyResult interface {
 	TypeMap() map[string]string;
 }
 
-// The most basic type of database cursor.
-// TODO: base on exp/iterable instead? Iter() <-chan interface{};
-//
-// MoreResults() returns true if there are more results
-// to be fetched.
-//
-// FetchOne() returns the next result from the database.
-// Each result is returned as an array of generic objects.
-// The database driver in question has to define what
-// concrete types are returned depending on the types
-// used by the database system.
-//
-// FetchMany() returns at most count results.
-// XXX: FetchMany() MAY GO AWAY SOON.
-//
-// FetchAll() returns all (remaining) results.
-// XXX: FetchAll() MAY GO AWAY SOON.
-//
-// Close() frees the cursor. After a cursor has been
-// closed, no further operations are allowed on it.
+// DEPRECATED
 type Cursor interface {
 	MoreResults() bool;
 	FetchOne() ([]interface{}, os.Error);
@@ -258,14 +239,7 @@ type Cursor interface {
 	Close() os.Error;
 }
 
-// InformativeCursors supply useful but optional information.
-//
-// Description() returns a map from (the name of) a field to
-// (the name of) its type. The exact format of field and type
-// names is specified by the database driver in question.
-//
-// Results() returns the number of results remaining to be
-// fetched.
+// DEPRECATED
 type InformativeCursor interface {
 	Cursor;
 	Description() (map[string]string, os.Error);
