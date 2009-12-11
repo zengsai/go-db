@@ -246,12 +246,16 @@ type InformativeCursor interface {
 	Results() int;
 }
 
-// XXX: an experimental "classic" API for results (to replace Cursor)
+// TODO: the new way of returning results from Execute()
 type ResultSet interface {
+	Iter() <-chan Result;
+	Close() os.Error;
+}
+
+// XXX: an experimental "classic" API for results (to replace Cursor)
+type ClassicResultSet interface {
 	More() bool;
 	Fetch() Result;
-	// TODO: replace More/Fetch with Iter() <-chan Result;?
-	// could turn More/Fetch into ClassicResultSet :-D
 	Close() os.Error;
 }
 
