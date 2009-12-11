@@ -8,8 +8,8 @@ import "os"
 
 // ClassicConnections avoid the use of channels for results.
 // They perform slightly better (at least while we wait for
-// the Go runtime to get tuned) but are less convenient to
-// use because the for/range construct doesn't apply.
+// the Go runtime to get tuned more) but are less convenient
+// to use because the for/range construct doesn't apply.
 //
 // ExecuteClassic() is similar to Execute() except that it
 // returns a ClassicResultSet (see below).
