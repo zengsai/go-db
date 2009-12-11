@@ -13,6 +13,8 @@ import "os"
 //
 // ExecuteClassic() is similar to Execute() except that it
 // returns a ClassicResultSet (see below).
+//
+// TODO: replace Cursor with ClassicResultSet
 type ClassicConnection interface {
 	Connection;
 	ExecuteClassic(stat Statement, parameters ...) (Cursor, os.Error);
