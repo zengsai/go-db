@@ -112,19 +112,3 @@ type OpenSignature func(url string) (Connection, os.Error)
 type Statement interface {
 	Close() os.Error;
 }
-
-// DEPRECATED
-type Cursor interface {
-	MoreResults() bool;
-	FetchOne() ([]interface{}, os.Error);
-	FetchMany(count int) ([][]interface{}, os.Error);
-	FetchAll() ([][]interface{}, os.Error);
-	Close() os.Error;
-}
-
-// DEPRECATED
-type InformativeCursor interface {
-	Cursor;
-	Description() (map[string]string, os.Error);
-	Results() int;
-}
