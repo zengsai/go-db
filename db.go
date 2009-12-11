@@ -138,12 +138,6 @@ type Connection interface {
 	Close() os.Error;
 }
 
-// XXX: an experimental "classic" API
-type ClassicConnection interface {
-	Connection;
-	ExecuteClassic(stat Statement, parameters ...) (Cursor, os.Error);
-}
-
 // InformativeConnections supply useful but optional information.
 //
 // Changes() returns the number of changes the last query made
@@ -249,13 +243,6 @@ type InformativeCursor interface {
 // TODO: the new way of returning results from Execute()
 type ResultSet interface {
 	Iter() <-chan Result;
-	Close() os.Error;
-}
-
-// XXX: an experimental "classic" API for results (to replace Cursor)
-type ClassicResultSet interface {
-	More() bool;
-	Fetch() Result;
 	Close() os.Error;
 }
 
