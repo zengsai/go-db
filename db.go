@@ -197,9 +197,3 @@ type InformativeCursor interface {
 	Description() (map[string]string, os.Error);
 	Results() int;
 }
-
-// TODO: the new way of returning results from Execute()
-type ResultSet interface {
-	Iter() <-chan Result;
-	Close() os.Error;
-}
