@@ -9,12 +9,13 @@ import "os"
 // The simplest way of processing query results.
 //
 // Iter() returns a channel of Result objects which can be
-// examined one at a time. Note that called Iter() several
-// times will return the same channel over and over again.
+// examined one at a time. Calling Iter() repeatedly will
+// return the same channel over and over again, ResultSet
+// does not cache results. Once Close() has been called,
+// Iter() will return nil.
 //
 // Close() shuts down the iteration mechanism and frees all
-// associated resources. After a result set has been closed,
-// Iter() will return nil.
+// associated resources.
 type ResultSet interface {
 	Iter() <-chan Result;
 	Close() os.Error;
