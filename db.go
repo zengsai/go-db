@@ -103,12 +103,3 @@ type VersionSignature func() (map[string]string, os.Error)
 // connection objects conforming to one or more of the following
 // interfaces which represent different levels of functionality.
 type OpenSignature func(url string) (Connection, os.Error)
-
-// Statements are precompiled queries, possibly with remaining
-// parameter slots that need to be filled before execution.
-// TODO: include parameter binding API? or subsume in Execute()?
-// what about resetting the statement or clearing parameter
-// bindings?
-type Statement interface {
-	Close() os.Error;
-}

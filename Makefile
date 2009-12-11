@@ -1,6 +1,6 @@
 include $(GOROOT)/src/Make.$(GOARCH)
 
 TARG=db
-GOFILES=db.go classic.go util.go result.go set.go connection.go cursor.go
+GOFILES=db.go classic.go util.go result.go set.go connection.go cursor.go statement.go
 
 include $(GOROOT)/src/Make.pkg
