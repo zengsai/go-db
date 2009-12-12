@@ -35,7 +35,9 @@ type ClassicResultSet interface {
 	Close() os.Error;
 }
 
-// TODO
+// Fetch all remaining results. If we get no results at
+// all, an error will be returned; otherwise it probably
+// still occurred but will be hidden.
 func ClassicFetchAll(rs ClassicResultSet) (data [][]interface{}, error os.Error) {
 	var v vector.Vector;
 	var d interface{}
