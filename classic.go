@@ -69,7 +69,9 @@ func ClassicFetchAll(rs ClassicResultSet) (data [][]interface{}, error os.Error)
 	return;
 }
 
-// TODO
+// Fetch at most count results. If we get no results at
+// all, an error will be returned; otherwise it probably
+// still occurred but will be hidden.
 func ClassicFetchMany(rs ClassicResultSet, count int) (data [][]interface{}, error os.Error) {
 	d := make([][]interface{}, count);
 	l := 0;
