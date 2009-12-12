@@ -25,7 +25,7 @@ func ExecuteDirectly(conn Connection, query string, params ...) (results [][]int
 	}
 	defer s.Close();
 
-	var c Cursor;
+	var c ClassicResultSet;
 	con := conn.(ClassicConnection);
 	c, err = con.ExecuteClassic(s, params);
 	if err != nil || c == nil {
@@ -33,7 +33,7 @@ func ExecuteDirectly(conn Connection, query string, params ...) (results [][]int
 	}
 	defer c.Close();
 
-	results, err = c.FetchAll();
+	results, err = ClassicFetchAll(c);
 	return;
 }
 

@@ -5,6 +5,7 @@
 package db
 
 import "os"
+import "container/vector"
 
 // ClassicConnections avoid the use of channels for results.
 // They perform slightly better (at least while we wait for
@@ -13,11 +14,9 @@ import "os"
 //
 // ExecuteClassic() is similar to Execute() except that it
 // returns a ClassicResultSet (see below).
-//
-// TODO: replace Cursor with ClassicResultSet
 type ClassicConnection interface {
 	Connection;
-	ExecuteClassic(stat Statement, parameters ...) (Cursor, os.Error);
+	ExecuteClassic(stat Statement, parameters ...) (ClassicResultSet, os.Error);
 }
 
 // ClassicResultSets offer the same functionality as regular
@@ -34,4 +33,38 @@ type ClassicResultSet interface {
 	More() bool;
 	Fetch() Result;
 	Close() os.Error;
+}
+
+// TODO
+func ClassicFetchAll(rs ClassicResultSet) (data [][]interface{}, error os.Error) {
+	var v vector.Vector;
+	var d interface{}
+	var e os.Error;
+
+	for rs.More() {
+		r := rs.Fetch();
+		d = r.Data();
+		if d != nil {
+			v.Push(d);
+		}
+		e = r.Error();
+		if e != nil {
+			break;
+		}
+	}
+
+	l := v.Len();
+
+	if l > 0 {
+		// TODO: how can this be done better?
+		data = make([][]interface{}, l);
+		for i := 0; i < l; i++ {
+			data[i] = v.At(i).([]interface{})
+		}
+	} else {
+		// no results at all, return the error
+		error = e
+	}
+
+	return;
 }
