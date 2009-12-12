@@ -31,6 +31,14 @@
 // the database system. We therefore encourage drivers to implement
 // at least two error types, DriverError and SystemError. Clients
 // can then check the runtime type of an error if they wish to.
+//
+// Classic API:
+//
+// The "classic" API is completely optional and not all database
+// drivers support it. It's sole purpose is to provide a faster
+// way of accessing results while the Go runtime is catching up
+// and the speed of channels is being improved. The "classic" API
+// will disappear eventually, so it's better to stay away from it.
 package db
 
 import "os"
