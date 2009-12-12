@@ -20,19 +20,6 @@ type Result interface {
 	Error() os.Error;
 }
 
-// InformativeResults supply useful but optional information.
-//
-// Fields() returns the names of each item of data in the
-// result.
-//
-// Types() returns the names of the types of each item in
-// the result.
-type InformativeResult interface {
-	Result;
-	Fields() []string;
-	Types() []string;
-}
-
 // FancyResults provide an alternate way of processing results.
 //
 // DataMap() returns a map from item names to item values. As

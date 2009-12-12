@@ -20,3 +20,15 @@ type ResultSet interface {
 	Iter() <-chan Result;
 	Close() os.Error;
 }
+
+// InformativeResultSets supply useful but optional information.
+//
+// Fields() returns the names of each item of data in the
+// result.
+//
+// Types() returns the names of the types of each item in
+// the result.
+type InformativeResultSet interface {
+	Fields() []string;
+	Types() []string;
+}
