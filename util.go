@@ -48,7 +48,7 @@ func ExecuteDirectly(conn Connection, query string, params ...) (results [][]int
 func ParseQueryURL(str string) (opt map[string]string, err os.Error) {
 	opt = make(map[string]string);
 	if len(str) > 0 {
-		err = parseQueryHelper(str, opt);
+		err = parseQueryHelper(str, opt)
 	}
 	return;
 }
@@ -56,8 +56,8 @@ func ParseQueryURL(str string) (opt map[string]string, err os.Error) {
 func parseQueryHelper(str string, opt map[string]string) (err os.Error) {
 	pairs := strings.Split(str, ";", 0);
 	if len(pairs) == 0 {
-		err = os.NewError("ParseQueryURL: No pairs in "+str);
-		return; // nothing left to do
+		err = os.NewError("ParseQueryURL: No pairs in " + str);
+		return;	// nothing left to do
 	}
 
 	for _, p := range pairs {
@@ -67,14 +67,12 @@ func parseQueryHelper(str string, opt map[string]string) (err os.Error) {
 		// the last error, a tradeoff
 		if len(pieces) == 2 {
 			if _, duplicate := opt[pieces[0]]; duplicate {
-				err = os.NewError("ParseQueryURL: Duplicate key "+pieces[0]);
-			}
-			else {
+				err = os.NewError("ParseQueryURL: Duplicate key " + pieces[0])
+			} else {
 				opt[pieces[0]] = pieces[1]
 			}
-		}
-		else {
-			err = os.NewError("ParseQueryURL: One '=' expected, got "+p);
+		} else {
+			err = os.NewError("ParseQueryURL: One '=' expected, got " + p)
 		}
 	}
 
