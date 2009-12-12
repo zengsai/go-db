@@ -68,3 +68,40 @@ func ClassicFetchAll(rs ClassicResultSet) (data [][]interface{}, error os.Error)
 
 	return;
 }
+
+// TODO
+func ClassicFetchMany(rs ClassicResultSet, count int) (data [][]interface{}, error os.Error) {
+	d := make([][]interface{}, count);
+	l := 0;
+	var e os.Error;
+
+	// grab at most count results
+	for l < count {
+		r := rs.Fetch();
+		d[l] = r.Data();
+		e = r.Error();
+		if e == nil {
+			l += 1
+		} else {
+			break
+		}
+	}
+
+	if l > 0 {
+		// there were results
+		if l < count {
+			// but fewer than expected, need fresh copy
+			data = make([][]interface{}, l);
+			for i := 0; i < l; i++ {
+				data[i] = d[i]
+			}
+		} else {
+			data = d
+		}
+	} else {
+		// no results at all, return the error
+		error = e
+	}
+
+	return;
+}
