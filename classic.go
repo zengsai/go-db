@@ -47,11 +47,11 @@ func ClassicFetchAll(rs ClassicResultSet) (data [][]interface{}, error os.Error)
 		r := rs.Fetch();
 		d = r.Data();
 		if d != nil {
-			v.Push(d);
+			v.Push(d)
 		}
 		e = r.Error();
 		if e != nil {
-			break;
+			break
 		}
 	}
 
